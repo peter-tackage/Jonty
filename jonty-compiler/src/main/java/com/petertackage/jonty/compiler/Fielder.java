@@ -16,10 +16,8 @@
 
 package com.petertackage.jonty.compiler;
 
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
 import java.util.Set;
@@ -27,7 +25,8 @@ import java.util.TreeSet;
 
 import static javax.lang.model.element.Modifier.*;
 
-public class Fielder {
+// TODO This should generate Kotlin code.
+final class Fielder {
 
     private final ClassName fielderClassName;
     private final Set<String> names;
@@ -47,39 +46,32 @@ public class Fielder {
     private TypeSpec createType(boolean debuggable) {
         TypeSpec.Builder result = TypeSpec.classBuilder(fielderClassName.simpleName())
                 .addModifiers(PUBLIC)
-                .addModifiers(FINAL);
+                .addModifiers(FINAL)
+                .addField(defineField())
+                .addStaticBlock(defineFieldsBlock())
+                .addMethod(createFieldsMethod());
 
+        // TODO In Kotlin we could have this lazily loaded rather than statically defined.
 
-        // public class Sound__Jonty // might extend
-        // {
-        //   public static final Set<String> fields; = // assign this later
-        //   static {
-
-        //
-        //   public Sound__Jonty() {
-        //
-        //
-        //   }
-        //
-
-
-        // Add  private final String[] fields = { ... }
-        // public Set<String> fields{} {
-        //   HashSet<String> fieldSet = new HashSet<String>(fields.length)
-        //
-        //   fieldSet.addAll(fields)
-        //   return Collections.unmodifiableSet(fieldSet);
-        // }
-
-
-        if (!names.isEmpty()) {
-            result.addMethod(createFieldsMethod());
-        }
 
         return result.build();
     }
 
+    private FieldSpec defineField() {
+        // public static final Set<String> fields;
+        // TODO define
+        return null;
+    }
+
+    @NotNull
+    private CodeBlock defineFieldsBlock() {
+        // static { ... }
+        // TODO define
+        return null;
+    }
+
     private MethodSpec createFieldsMethod() {
+        // TODO Should this be immutable? Probably.
         return MethodSpec.constructorBuilder()
                 .addModifiers(PUBLIC)
                 .addModifiers(STATIC)

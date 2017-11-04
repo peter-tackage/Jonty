@@ -60,9 +60,9 @@ final class JontyProcessor extends AbstractProcessor {
     public boolean process(final Set<? extends TypeElement> annotations,
                            final RoundEnvironment roundEnv) {
 
-        Map<TypeElement, Fielder> targetClassMap = findAndParseFields(roundEnv);
+        Map<TypeElement, Fielder> fielderMap = findAndParseFields(roundEnv);
 
-        for (Map.Entry<TypeElement, Fielder> entry : targetClassMap.entrySet()) {
+        for (Map.Entry<TypeElement, Fielder> entry : fielderMap.entrySet()) {
             TypeElement typeElement = entry.getKey();
             Fielder fielder = entry.getValue();
 
@@ -96,10 +96,7 @@ final class JontyProcessor extends AbstractProcessor {
 
         // Process each @Fieldable class element.
         for (Element element : env.getElementsAnnotatedWith(Fieldable.class)) {
-            // PT - I don't really understand the need for this, so ignore.
-//            if (!SuperficialValidation.validateElement(element)) {
-//                continue;
-//            }
+
             try {
                 parseFieldableClass(element, builderMap);
             } catch (Exception e) {
@@ -150,31 +147,6 @@ final class JontyProcessor extends AbstractProcessor {
         return elementUtils.getPackageOf(type).getQualifiedName().toString();
     }
 
-//    private boolean isValidForGeneratedCode(Class<? extends Annotation> annotationClass,
-//                                            String targetThing, Element element) {
-//        boolean hasError = false;
-//        TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();
-//
-//        // Verify field modifiers.
-//        Set<Modifier> modifiers = element.getModifiers();
-//        if (modifiers.contains(STATIC)) {
-//            error(element, "@%s %s must not be or static. (%s.%s)",
-//                  annotationClass.getSimpleName(), targetThing, enclosingElement.getQualifiedName(),
-//                  element.getSimpleName());
-//            hasError = true;
-//        }
-//
-//        // Verify containing type.
-//        if (enclosingElement.getKind() != CLASS) {
-//            error(enclosingElement, "@%s %s may only be contained in classes. (%s.%s)",
-//                  annotationClass.getSimpleName(), targetThing, enclosingElement.getQualifiedName(),
-//                  element.getSimpleName());
-//            hasError = true;
-//        }
-//
-//        return hasError;
-//    }
-
     private void logParsingError(Element element, Class<? extends Annotation> annotation,
                                  Exception e) {
         StringWriter stackTrace = new StringWriter();
@@ -200,15 +172,5 @@ final class JontyProcessor extends AbstractProcessor {
         processingEnv.getMessager().printMessage(kind, message, element);
     }
 
-    //    private void processIndependentAnnotations(final Class<?> clazz, final Object testInstance) {
-//    Class<?> classContext = clazz;
-//        while (classContext != Object.class) {
-//        //this will create @Mocks, @Captors, etc:
-//        delegate.process(classContext, testInstance);
-//        //this will create @Spies:
-//        spyAnnotationEngine.process(classContext, testInstance);
-//
-//        classContext = classContext.getSuperclass();
-//    }
 }
 
