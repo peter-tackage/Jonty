@@ -17,6 +17,8 @@
 package com.petertackage.jonty.compiler;
 
 import com.squareup.kotlinpoet.*;
+import kotlin.collections.CollectionsKt;
+import kotlin.jvm.functions.Function1;
 
 import java.util.Collections;
 import java.util.Set;
@@ -41,15 +43,26 @@ final class Fielder {
                 .build();
     }
 
-    private static TypeSpec defineObject(String name) {
+    private TypeSpec defineObject(String name) {
         return TypeSpec.objectBuilder(name)
                 .addProperty(defineFields())
                 .build();
     }
 
-    private static PropertySpec defineFields() {
-        return PropertySpec.builder("fields", ParameterizedTypeName.get(Set.class, String.class))
+    private PropertySpec defineFields() {
+        return PropertySpec.builder("fields", ParameterizedTypeName.get(Iterable.class, String.class))
+                .initializer("setOf(%L)", toArgs(names))
                 .build();
+    }
+
+    private static String toArgs(Iterable<String> iterable) {
+        return CollectionsKt.joinToString(iterable, ", ", "", "", -1, "",
+                new Function1<String, CharSequence>() {
+                    @Override
+                    public CharSequence invoke(String name) {
+                        return "\"" + name + "\"";
+                    }
+                });
     }
 
     final static class Builder {
