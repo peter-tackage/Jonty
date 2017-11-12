@@ -7,7 +7,8 @@ targetCompatibility = JavaVersion.VERSION_1_7
 dependencies {
     implementation project(":jonty-annotations")
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
-    api 'com.squareup:javapoet:1.9.0'
+    api 'com.squareup:kotlinpoet:0.6.0'
 
+    compile 'com.google.auto.service:auto-service:1.0-rc3'
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }

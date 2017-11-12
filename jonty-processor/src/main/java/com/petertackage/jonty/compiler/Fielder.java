@@ -16,14 +16,11 @@
 
 package com.petertackage.jonty.compiler;
 
-import com.squareup.javapoet.*;
-import org.jetbrains.annotations.NotNull;
+import com.squareup.kotlinpoet.*;
 
 import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
-
-import static javax.lang.model.element.Modifier.*;
 
 // TODO This should generate Kotlin code.
 final class Fielder {
@@ -37,46 +34,21 @@ final class Fielder {
         this.names = Collections.unmodifiableSet(names);
     }
 
-    JavaFile brewJava(boolean debuggable) {
-        return JavaFile.builder(fielderClassName.packageName(), createType(debuggable))
-                .addFileComment("Generated code from Jonty. Do not modify!")
+    FileSpec brew(boolean debuggable) {
+        return FileSpec.builder(fielderClassName.packageName(), fielderClassName.simpleName())
+                .addComment("Generated code by Jonty. Do not modify!")
+                .addType(defineObject(fielderClassName.simpleName()))
                 .build();
     }
 
-    private TypeSpec createType(boolean debuggable) {
-        TypeSpec.Builder result = TypeSpec.classBuilder(fielderClassName.simpleName())
-                .addModifiers(PUBLIC)
-                .addModifiers(FINAL)
-                .addField(defineField())
-                .addStaticBlock(defineFieldsBlock())
-                .addMethod(createFieldsMethod());
-
-        // TODO In Kotlin we could have this lazily loaded rather than statically defined.
-
-
-        return result.build();
+    private static TypeSpec defineObject(String name) {
+        return TypeSpec.objectBuilder(name)
+                .addProperty(defineFields())
+                .build();
     }
 
-    private FieldSpec defineField() {
-        // public static final Set<String> fields;
-        // TODO define
-        return null;
-    }
-
-    @NotNull
-    private CodeBlock defineFieldsBlock() {
-        // static { ... }
-        // TODO define
-        return null;
-    }
-
-    private MethodSpec createFieldsMethod() {
-        // TODO Should this be immutable? Probably.
-        return MethodSpec.constructorBuilder()
-                .addModifiers(PUBLIC)
-                .addModifiers(STATIC)
-                .returns(String[].class)
-                .addStatement(("return fields;"))
+    private static PropertySpec defineFields() {
+        return PropertySpec.builder("fields", ParameterizedTypeName.get(Set.class, String.class))
                 .build();
     }
 

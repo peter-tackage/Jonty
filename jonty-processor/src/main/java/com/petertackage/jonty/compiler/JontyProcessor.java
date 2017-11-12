@@ -16,20 +16,19 @@
 
 package com.petertackage.jonty.compiler;
 
+import com.google.auto.service.AutoService;
 import com.petertackage.jonty.Fieldable;
-import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.JavaFile;
+import com.squareup.kotlinpoet.ClassName;
+import com.squareup.kotlinpoet.FileSpec;
 
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.Filer;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -39,7 +38,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
-final class JontyProcessor extends AbstractProcessor {
+@AutoService(Processor.class)
+public final class JontyProcessor extends AbstractProcessor {
 
     private static final String OPTION_DEBUGGABLE = "jonty.debuggable";
 
@@ -47,18 +47,23 @@ final class JontyProcessor extends AbstractProcessor {
     private Filer filer;
     private boolean debuggable = true;
 
+    public JontyProcessor() {
+        super();
+    }
+
     @Override
     public synchronized void init(ProcessingEnvironment env) {
         super.init(env);
         elementUtils = env.getElementUtils();
         filer = env.getFiler();
         debuggable = !"false".equals(env.getOptions().get(OPTION_DEBUGGABLE));
-
     }
 
     @Override
     public boolean process(final Set<? extends TypeElement> annotations,
                            final RoundEnvironment roundEnv) {
+
+        note(null, "Starting processings");
 
         Map<TypeElement, Fielder> fielderMap = findAndParseFields(roundEnv);
 
@@ -67,9 +72,10 @@ final class JontyProcessor extends AbstractProcessor {
             Fielder fielder = entry.getValue();
 
             // Write it out to a file.
-            JavaFile javaFile = fielder.brewJava(debuggable);
+            FileSpec kotlinFile = fielder.brew(debuggable);
+
             try {
-                javaFile.writeTo(filer);
+                kotlinFile.writeTo(new File("/Users/ptac/gen"));
             } catch (IOException e) {
                 error(typeElement, "Unable to write fielder for type %s: %s", typeElement, e.getMessage());
             }
@@ -81,12 +87,12 @@ final class JontyProcessor extends AbstractProcessor {
 
     @Override
     public SourceVersion getSupportedSourceVersion() {
-        return SourceVersion.RELEASE_6;
+        return SourceVersion.latestSupported();
     }
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {
-        return Collections.singleton(Fieldable.class.getName());
+        return Collections.singleton(Fieldable.class.getCanonicalName());
     }
 
     private Map<TypeElement, Fielder> findAndParseFields(RoundEnvironment env) {
@@ -96,7 +102,6 @@ final class JontyProcessor extends AbstractProcessor {
 
         // Process each @Fieldable class element.
         for (Element element : env.getElementsAnnotatedWith(Fieldable.class)) {
-
             try {
                 parseFieldableClass(element, builderMap);
             } catch (Exception e) {
@@ -120,14 +125,18 @@ final class JontyProcessor extends AbstractProcessor {
     private void parseFieldableClass(Element element,
                                      Map<TypeElement, Fielder.Builder> builderMap) {
 
-        Fielder.Builder fielderBuilder = new Fielder.Builder(ClassName.get((TypeElement) element));
+        TypeElement typeElement = (TypeElement) element;
+        String packageName = getPackageName(typeElement);
+        String className = getClassName(typeElement, packageName);
+        ClassName bindingClassName = new ClassName(packageName, className + "_Fielder");
+
+        Fielder.Builder fielderBuilder = new Fielder.Builder(bindingClassName);
+
         for (Element enclosedElement : element.getEnclosedElements()) {
 
-            TypeElement typeElement = (TypeElement) enclosedElement;
-
             // Only interested in fields
-            if (typeElement.getKind() == ElementKind.FIELD) {
-                String fieldName = typeElement.getSimpleName().toString();
+            if (enclosedElement.getKind() == ElementKind.FIELD) {
+                String fieldName = enclosedElement.getSimpleName().toString();
                 fielderBuilder.addName(fieldName);
             }
 

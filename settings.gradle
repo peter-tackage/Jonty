@@ -1,5 +1,6 @@
 rootProject.name = 'jonty-parent'
 include 'jonty'
 include 'jonty-annotations'
-include 'jonty-compiler'
+include 'jonty-processor'
+include 'example'
 
