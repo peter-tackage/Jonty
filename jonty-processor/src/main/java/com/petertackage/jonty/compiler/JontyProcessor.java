@@ -102,6 +102,7 @@ public final class JontyProcessor extends AbstractProcessor {
 
         // Process each @Fieldable class element.
         for (Element element : env.getElementsAnnotatedWith(Fieldable.class)) {
+            note(element, "Got this element %s", element);
             try {
                 parseFieldableClass(element, builderMap);
             } catch (Exception e) {

@@ -1,10 +1,7 @@
-plugins {
-    id "net.ltgt.apt" version "0.13"
-}
-
 version 'unspecified'
 
 apply plugin: 'java'
+apply plugin: 'kotlin'
 
 sourceCompatibility = 1.8
 
@@ -13,9 +10,10 @@ repositories {
 }
 
 dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
     compile project(':jonty-annotations')
-    compile project(':jonty-processor')
-    apt project(':jonty-processor')
+    kapt project(':jonty-processor')
+    compileOnly project(':jonty-processor')
 }

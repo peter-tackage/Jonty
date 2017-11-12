@@ -11,6 +11,7 @@ public class Example {
 
     public static void main(String[] args) {
         new Example();
+        new KotlinDataClass("xyz");
         // System.out.println(Jonty.field(Example.class));
     }
 }
