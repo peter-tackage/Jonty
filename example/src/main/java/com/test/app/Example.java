@@ -14,4 +14,21 @@ public class Example {
         new KotlinDataClass("xyz");
         // System.out.println(Jonty.field(Example.class));
     }
+
+    @Fieldable
+    public static class InnerExample {
+        private String d;
+        private String e;
+        private String f;
+    }
+
+    @Fieldable
+    private static class PrivateInnerExample {
+        private String g;
+    }
+
+    @Fieldable
+    private class PrivateInnerNonStaticExample {
+        private String h;
+    }
 }
