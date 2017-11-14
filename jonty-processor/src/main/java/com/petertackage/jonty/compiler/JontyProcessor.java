@@ -111,7 +111,6 @@ public final class JontyProcessor extends AbstractProcessor {
         }
 
         // @TODO Traverse up the tree, but without duplicates. Don't need to do this yet.
-        // @TODO Will just assume that only one annotation exists in the hierachy.
         // @TODO In any case, duplicates aren't problematic
         // Associate superclass binders with their subclass binders. This is a queue-based tree walk
         // which starts at the roots (superclasses) and walks to the leafs (subclasses).

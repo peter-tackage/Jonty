@@ -7,6 +7,6 @@ data class KotlinDataClass(val xyz: String)
 
 @Fieldable
 class KotlinClass {
-
-    private val abc : String = "AVX"
+    private var tub: String = "ddfsdsfdsd"
+    private val abc: String = "AVX"
 }

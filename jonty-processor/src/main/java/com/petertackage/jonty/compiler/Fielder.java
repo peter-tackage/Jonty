@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
-// TODO This should generate Kotlin code.
 final class Fielder {
 
     private final ClassName fielderClassName;

@@ -17,6 +17,7 @@ public class Example {
 
     @Fieldable
     public static class InnerExample {
+
         private String d;
         private String e;
         private String f;
@@ -30,5 +31,11 @@ public class Example {
     @Fieldable
     private class PrivateInnerNonStaticExample {
         private String h;
+        public String k;
+    }
+
+    @Fieldable
+    class SubClass extends PrivateInnerNonStaticExample {
+        private String i;
     }
 }
