@@ -38,4 +38,13 @@ public class Example {
     class SubClass extends PrivateInnerNonStaticExample {
         private String i;
     }
+
+    class PlainParent {
+        private String pp;
+    }
+
+    @Fieldable
+    class SubClass2 extends PlainParent {
+        private String i;
+    }
 }

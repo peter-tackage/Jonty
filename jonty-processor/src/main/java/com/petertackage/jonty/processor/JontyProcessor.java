@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.petertackage.jonty.compiler;
+package com.petertackage.jonty.processor;
 
 import com.google.auto.service.AutoService;
 import com.petertackage.jonty.Fieldable;
@@ -26,6 +26,9 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.type.DeclaredType;
+import javax.lang.model.type.TypeKind;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
 import java.io.File;
@@ -110,10 +113,6 @@ public final class JontyProcessor extends AbstractProcessor {
             }
         }
 
-        // @TODO Traverse up the tree, but without duplicates. Don't need to do this yet.
-        // @TODO In any case, duplicates aren't problematic
-        // Associate superclass binders with their subclass binders. This is a queue-based tree walk
-        // which starts at the roots (superclasses) and walks to the leafs (subclasses).
         Map<TypeElement, Fielder> fielderMap = new LinkedHashMap<>();
 
         for (Map.Entry<TypeElement, Fielder.Builder> entry : builderMap.entrySet()) {
@@ -132,17 +131,33 @@ public final class JontyProcessor extends AbstractProcessor {
 
         Fielder.Builder fielderBuilder = new Fielder.Builder(bindingClassName);
 
-        for (Element enclosedElement : element.getEnclosedElements()) {
+        builderMap.put((TypeElement) element, fielderBuilder);
 
-            // Only interested in fields
-            if (enclosedElement.getKind() == ElementKind.FIELD) {
-                String fieldName = enclosedElement.getSimpleName().toString();
-                fielderBuilder.addName(fieldName);
+        while (typeElement != null) {
+            for (Element enclosedElement : typeElement.getEnclosedElements()) {
+                // Only interested in fields
+                if (enclosedElement.getKind() == ElementKind.FIELD) {
+                    note(enclosedElement, "Element enclosed fields: %s", enclosedElement);
+                    String fieldName = enclosedElement.getSimpleName().toString();
+                    note(enclosedElement, "Adding field: %s", fieldName);
+                    fielderBuilder.addName(fieldName);
+                }
             }
-
+            typeElement = findParentType(typeElement);
         }
 
-        builderMap.put((TypeElement) element, fielderBuilder);
+    }
+
+    private TypeElement findParentType(TypeElement typeElement) {
+        note(typeElement, "Finding superclass for %s: ", typeElement);
+        TypeMirror type;
+        type = typeElement.getSuperclass();
+        if (type.getKind() == TypeKind.NONE) {
+            note(typeElement, "No superclass for: %s ", type);
+            return null;
+        }
+        note(typeElement, "Found superclass: %s ", type);
+        return (TypeElement) ((DeclaredType) type).asElement();
     }
 
     private static String getClassName(TypeElement type, String packageName) {

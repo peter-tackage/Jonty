@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.petertackage.jonty.compiler
+package com.petertackage.jonty.processor
 
 import com.squareup.kotlinpoet.*
 import java.util.*
@@ -45,7 +45,7 @@ internal class Fielder private constructor(private val fielderClassName: ClassNa
     }
 
     private fun toArgs(iterable: Iterable<String>): String {
-        return iterable.joinToString(transform = { name -> "\" $name \"" })
+        return iterable.joinToString(transform = { name -> "\"$name\"" })
     }
 
     internal class Builder(private val fielderClassName: ClassName) {
