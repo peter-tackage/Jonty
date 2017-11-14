@@ -47,4 +47,9 @@ public class Example {
     class SubClass2 extends PlainParent {
         private String i;
     }
+
+    @Fieldable
+    class Empty {
+
+    }
 }

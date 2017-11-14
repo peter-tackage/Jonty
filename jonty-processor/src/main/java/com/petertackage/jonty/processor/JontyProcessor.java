@@ -127,7 +127,7 @@ public final class JontyProcessor extends AbstractProcessor {
         TypeElement typeElement = (TypeElement) element;
         String packageName = getPackageName(typeElement);
         String className = getClassName(typeElement, packageName);
-        ClassName bindingClassName = new ClassName(packageName, className + "_Fielder");
+        ClassName bindingClassName = new ClassName(packageName, className + "_JontyFielder");
 
         Fielder.Builder fielderBuilder = new Fielder.Builder(bindingClassName);
 
@@ -164,7 +164,7 @@ public final class JontyProcessor extends AbstractProcessor {
         return packageName.length() == 0 ?
                 type.getQualifiedName().toString() :
                 type.getQualifiedName().toString().substring(packageName.length() + 1)
-                        .replace('.', '$');
+                        .replace('.', '_');
     }
 
     private String getPackageName(TypeElement type) {
