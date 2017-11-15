@@ -33,13 +33,13 @@ val fields = MyClass_JontyFielder.fields;
 
 ```
 
-# Usage
+## Usage
 
 Just annotate your class/data class with the `@Fieldable` annotation and Jonty will generate a class based upon your class name.
 
 There are no restrictions on private fields, or inner classes.
 
-# Why Jonty?
+## Why Jonty?
 
 Because of the *fielding* (terrible pun, I know) done [here](https://www.youtube.com/watch?v=e4Um90BzDjM).
 
