@@ -15,6 +15,15 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 
     compile project(':jonty-annotations')
+    compile project(':jonty-processor')
     kapt project(':jonty-processor')
-    compileOnly project(':jonty-processor')
+}
+
+apply plugin: 'idea'
+
+idea {
+    module {
+        sourceDirs += files('build/generated/source/kapt/main', 'build/generated/source/kaptKotlin/main')
+        generatedSourceDirs += files('build/generated/source/kapt/main', 'build/generated/source/kaptKotlin/main')
+    }
 }

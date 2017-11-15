@@ -39,7 +39,7 @@ internal class Fielder private constructor(private val fielderClassName: ClassNa
 
     private fun defineFields(): PropertySpec {
         return PropertySpec.builder("fields",
-                ParameterizedTypeName.get(Iterable::class.java, String::class.java))
+                ParameterizedTypeName.get(Iterable::class.asClassName(), kotlin.String::class.asTypeName()))
                 .initializer("setOf(%L)", toArgs(names))
                 .build()
     }
@@ -60,4 +60,5 @@ internal class Fielder private constructor(private val fielderClassName: ClassNa
             return Fielder(fielderClassName, names)
         }
     }
+
 }
