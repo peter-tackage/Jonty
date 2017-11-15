@@ -31,11 +31,11 @@ import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -78,7 +78,9 @@ public final class JontyProcessor extends AbstractProcessor {
             FileSpec kotlinFile = fielder.brew(debuggable);
 
             try {
-                kotlinFile.writeTo(new File("/Users/ptac/gen"));
+                String kaptKotlinGeneratedOutDir = processingEnv.getOptions().get("kapt.kotlin.generated");
+                note(null, "KaptDir is: %s", kaptKotlinGeneratedOutDir);
+                kotlinFile.writeTo(Paths.get(kaptKotlinGeneratedOutDir));
             } catch (IOException e) {
                 error(typeElement, "Unable to write fielder for type %s: %s", typeElement, e.getMessage());
             }
