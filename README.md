@@ -1,5 +1,8 @@
 # Jonty
 
+[![Build Status](https://travis-ci.org/peter-tackage/jonty.svg?branch=master)](https://travis-ci.org/peter-tackage/jonty) [![Release](https://jitpack.io/v/peter-tackage/jonty.svg)](https://jitpack.io/#peter-tackage/jonty)
+
+
 A simple Kotlin/Java annotation processor to generate a list of the names of fields of a given class.
 
 For example:
