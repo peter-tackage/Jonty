@@ -21,7 +21,7 @@ public class MyClass {
 After compilation, this will generate an object in a Kotlin file:
  
 ```kotlin
-object KotlinClass_JontyFielder {
+object MyClass_JontyFielder {
   val fields: Iterable<String> = setOf("profiles", "username")
 }
 ``` 
