@@ -18,7 +18,15 @@ public class MyClass {
 }
 ```
 
-Will generate a class which can be accessed via:
+After compilation, this will generate an object in a Kotlin file:
+ 
+```kotlin
+object KotlinClass_JontyFielder {
+  val fields: Iterable<String> = setOf("profiles", "username")
+}
+``` 
+ 
+Which can be accessed via:
 
 ```kotlin
 val fields = MyClass_JontyFielder.fields;
