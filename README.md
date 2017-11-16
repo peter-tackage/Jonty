@@ -29,7 +29,7 @@ object MyClass_JontyFielder {
 Which can be accessed via:
 
 ```kotlin
-val fields = MyClass_JontyFielder.fields;
+val fields = MyClass_JontyFielder.fields
 
 ```
 
@@ -37,7 +37,7 @@ val fields = MyClass_JontyFielder.fields;
 
 Just annotate your class/data class with the `@Fieldable` annotation and Jonty will generate a class based upon your class name.
 
-There are no restrictions on private fields, or inner classes.
+There are no restrictions on private fields, or inner classes. It also works with Kotlin data classes.
 
 ## Why Jonty?
 
