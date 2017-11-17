@@ -17,6 +17,7 @@
 package com.petertackage.jonty.processor
 
 import com.petertackage.jonty.Fieldable
+import com.petertackage.jonty.processor.internal.Fielder
 import com.squareup.kotlinpoet.ClassName
 import java.io.IOException
 import java.io.PrintWriter
@@ -59,12 +60,10 @@ class JontyProcessor : AbstractProcessor() {
                          roundEnv: RoundEnvironment): Boolean {
 
         note(null, "Starting process here")
-
         val fielderMap = findAndParseFields(roundEnv)
 
         for ((typeElement, fielder) in fielderMap) {
 
-            // Write it out to a file.
             val kotlinFile = fielder.brew(debuggable)
 
             try {
@@ -121,7 +120,6 @@ class JontyProcessor : AbstractProcessor() {
         val bindingClassName = ClassName(packageName, className + "_JontyFielder")
 
         val fielderBuilder = Fielder.Builder(bindingClassName)
-
         builderMap.put(element, fielderBuilder)
 
         while (typeElement != null) {
@@ -134,6 +132,7 @@ class JontyProcessor : AbstractProcessor() {
                     fielderBuilder.addName(fieldName)
                 }
             }
+            // Recursively add fields from the parent class
             typeElement = findParentType(typeElement)
         }
 
@@ -141,8 +140,7 @@ class JontyProcessor : AbstractProcessor() {
 
     private fun findParentType(typeElement: TypeElement): TypeElement? {
         note(typeElement, "Finding superclass for %s: ", typeElement)
-        val type: TypeMirror
-        type = typeElement.superclass
+        val type: TypeMirror = typeElement.superclass
         if (type.kind == TypeKind.NONE) {
             note(typeElement, "No superclass for: %s ", type)
             return null
@@ -155,12 +153,10 @@ class JontyProcessor : AbstractProcessor() {
         return elementUtils!!.getPackageOf(type).qualifiedName.toString()
     }
 
-    private fun logParsingError(element: Element, annotation: Class<out Annotation>,
-                                e: Exception) {
+    private fun logParsingError(element: Element, annotation: Class<out Annotation>, e: Exception) {
         val stackTrace = StringWriter()
         e.printStackTrace(PrintWriter(stackTrace))
-        error(element, "Unable to parse @%s fielder.\n\n%s", annotation.simpleName,
-                stackTrace)
+        error(element, "Unable to parse @%s fielder.\n\n%s", annotation.simpleName, stackTrace)
     }
 
     private fun error(element: Element, message: String, vararg args: Any) {

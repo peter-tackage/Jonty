@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.petertackage.jonty.processor
+package com.petertackage.jonty.processor.internal
 
 import com.squareup.kotlinpoet.*
 import java.util.*
