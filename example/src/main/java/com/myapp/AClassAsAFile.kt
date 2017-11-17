@@ -1,4 +1,4 @@
-package com.test.app
+package com.myapp
 
 import com.petertackage.jonty.Fieldable
 
