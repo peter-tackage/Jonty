@@ -3,41 +3,71 @@
 [![Build Status](https://travis-ci.org/peter-tackage/jonty.svg?branch=master)](https://travis-ci.org/peter-tackage/jonty) [![Release](https://jitpack.io/v/peter-tackage/jonty.svg)](https://jitpack.io/#peter-tackage/jonty)
 
 
-A simple Kotlin/Java annotation processor to generate a list of the names of fields of a given class.
+A simple Kotlin/Java annotation processor to generate a list field names of a class.
 
 For example:
 
 ```java
-
 @Fieldable
-public class MyClass {
-    private final List<SomeType> profiles;
+public class User {
+    private final List<Profile> profiles;
     private final String username;
+    private final String password;
+    private final Date lastLogin;
     
     // etc...
 }
 ```
 
-After compilation, this will generate an object in a Kotlin file:
+Jonty will generate an object in a Kotlin file in the `User` class' package:
  
 ```kotlin
-object MyClass_JontyFielder {
-  val fields: Iterable<String> = setOf("profiles", "username")
+object User_JontyFielder {
+  val fields: Iterable<String> = setOf("profiles", "username", "password", "lastLogin")
 }
 ``` 
  
 Which can be accessed via:
 
 ```kotlin
-val fields = MyClass_JontyFielder.fields
+val fields = User_JontyFielder.fields
 
+```
+
+or
+
+```java
+Iterable<String> fields = Sound_JontyFielder.INSTANCE.getFields()
 ```
 
 ## Usage
 
 Just annotate your class/data class with the `@Fieldable` annotation and Jonty will generate a class based upon your class name.
 
-There are no restrictions on private fields, or inner classes. It also works with Kotlin data classes.
+There are no restrictions on private fields, or inner classes. It also works with Kotlin classes.
+
+## Download
+
+Available via Jitpack.
+
+For Gradle, add kapt3 plugin:
+```groovy
+apply plugin: 'kotlin-kapt'
+```
+
+Add to your Jitpack to your project `repository` configuration"
+
+```groovy
+maven { url "https://jitpack.io" }
+```
+
+Add these dependencies:
+```groovy
+compileOnly "com.github.peter-tackage.jonty:jonty:<latest-version>"
+kapt "com.github.peter-tackage.jonty:jonty-processor:<latest-version>"
+```
+
+See [freesound-android](https://github.com/futurice/freesound-android) for a full working example.
 
 ## Why Jonty?
 
