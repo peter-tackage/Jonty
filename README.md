@@ -42,9 +42,12 @@ Iterable<String> fields = Sound_JontyFielder.INSTANCE.getFields()
 
 ## Usage
 
-Just annotate your class/data class with the `@Fieldable` annotation and Jonty will generate a class based upon your class name.
+Just annotate your Java/Kotlin class with the `@Fieldable` annotation and Jonty will generate a class based upon your class name.
 
-There are no restrictions on private fields, or inner classes. It also works with Kotlin classes.
+There are no restrictions on private fields, or inner classes. 
+
+If the class is a child class, then the unique field names for all parent classes will also be added.
+
 
 ## Download
 
