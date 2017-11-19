@@ -24,7 +24,7 @@ internal class Fielder private constructor(private val fielderClassName: ClassNa
 
     private val names: Set<String> = Collections.unmodifiableSet(names)
 
-    fun brew(debuggable: Boolean): FileSpec {
+    fun brew(): FileSpec {
         return FileSpec.builder(fielderClassName.packageName(), fielderClassName.simpleName())
                 .addComment("Generated code by Jonty. Do not modify!")
                 .addType(defineObject(fielderClassName.simpleName()))

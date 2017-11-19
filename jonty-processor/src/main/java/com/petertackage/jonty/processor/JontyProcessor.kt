@@ -64,7 +64,7 @@ class JontyProcessor : AbstractProcessor() {
 
         for ((typeElement, fielder) in fielderMap) {
 
-            val kotlinFile = fielder.brew(debuggable)
+            val kotlinFile = fielder.brew()
 
             try {
                 val kaptKotlinGeneratedOutDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
