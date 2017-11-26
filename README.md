@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/peter-tackage/jonty.svg?branch=master)](https://travis-ci.org/peter-tackage/jonty) [![Release](https://jitpack.io/v/peter-tackage/jonty.svg)](https://jitpack.io/#peter-tackage/jonty)
 
 
-A simple Kotlin/Java annotation processor to generate a list field names of a class.
+A simple Kotlin/Java annotation processor to generate a list of a class field names.
 
 For example:
 
@@ -44,10 +44,11 @@ Iterable<String> fields = Sound_JontyFielder.INSTANCE.getFields()
 
 Just annotate your Java/Kotlin class with the `@Fieldable` annotation and Jonty will generate a class based upon your class name.
 
-There are no restrictions on private fields, or inner classes. 
+There are no restrictions on class or field access modifiers.
 
 If the class is a child class, then the unique field names for all parent classes will also be added.
 
+Static fields are ignored.
 
 ## Download
 
