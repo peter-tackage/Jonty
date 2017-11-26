@@ -31,6 +31,7 @@ import javax.annotation.processing.SupportedOptions
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.Element
 import javax.lang.model.element.ElementKind
+import javax.lang.model.element.Modifier
 import javax.lang.model.element.TypeElement
 import javax.lang.model.type.DeclaredType
 import javax.lang.model.type.TypeKind
@@ -59,7 +60,7 @@ class JontyProcessor : AbstractProcessor() {
     override fun process(annotations: Set<TypeElement>,
                          roundEnv: RoundEnvironment): Boolean {
 
-        note(null, "Starting process here")
+        note(null, "Starting annotation processing round.")
         val fielderMap = findAndParseFields(roundEnv)
 
         for ((typeElement, fielder) in fielderMap) {
@@ -68,10 +69,10 @@ class JontyProcessor : AbstractProcessor() {
 
             try {
                 val kaptKotlinGeneratedOutDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
-                note(null, "KaptDir is: %s", KAPT_KOTLIN_GENERATED_OPTION_NAME)
+                note(null, "kaptKotlin output directory: %s.", KAPT_KOTLIN_GENERATED_OPTION_NAME)
                 kotlinFile.writeTo(Paths.get(kaptKotlinGeneratedOutDir))
             } catch (e: IOException) {
-                error(typeElement, "Unable to write fielder for type %s: %s", typeElement, e)
+                error(typeElement, "Unable to write fielder for type %s: %s.", typeElement, e)
             }
 
         }
@@ -94,7 +95,7 @@ class JontyProcessor : AbstractProcessor() {
 
         // Process each @Fieldable class element.
         for (element in env.getElementsAnnotatedWith(Fieldable::class.java)) {
-            note(element, "Got this element %s", element)
+            note(element, "Processing annotated element: %s.", element)
             try {
                 parseFieldableClass(element, builderMap)
             } catch (e: Exception) {
@@ -124,28 +125,32 @@ class JontyProcessor : AbstractProcessor() {
 
         while (typeElement != null) {
             for (enclosedElement in typeElement.enclosedElements) {
-                // Only interested in fields
-                if (enclosedElement.kind == ElementKind.FIELD) {
-                    note(enclosedElement, "Element enclosed fields: %s", enclosedElement)
+
+                note(enclosedElement,
+                        "Element enclosed element: %s, modifiers: %s, type: %s.",
+                        enclosedElement.simpleName, enclosedElement.modifiers, enclosedElement.asType())
+
+                // Only interested in non-static fields; properties
+                if (enclosedElement.kind == ElementKind.FIELD && !enclosedElement.modifiers.contains(Modifier.STATIC)) {
                     val fieldName = enclosedElement.simpleName.toString()
-                    note(enclosedElement, "Adding field: %s", fieldName)
+                    note(enclosedElement, "!! Adding field !!: %s.", fieldName)
                     fielderBuilder.addName(fieldName)
                 }
             }
-            // Recursively add fields from the parent class
+            // Add fields from the parent class
             typeElement = findParentType(typeElement)
         }
 
     }
 
     private fun findParentType(typeElement: TypeElement): TypeElement? {
-        note(typeElement, "Finding superclass for %s: ", typeElement)
+        note(typeElement, "Attempting to find superclass for %s.", typeElement)
         val type: TypeMirror = typeElement.superclass
         if (type.kind == TypeKind.NONE) {
-            note(typeElement, "No superclass for: %s ", type)
+            note(typeElement, "No superclass for: %s.", type)
             return null
         }
-        note(typeElement, "Found superclass: %s ", type)
+        note(typeElement, "Found superclass: %s.", type)
         return (type as DeclaredType).asElement() as TypeElement
     }
 
@@ -156,21 +161,21 @@ class JontyProcessor : AbstractProcessor() {
     private fun logParsingError(element: Element, annotation: Class<out Annotation>, e: Exception) {
         val stackTrace = StringWriter()
         e.printStackTrace(PrintWriter(stackTrace))
-        error(element, "Unable to parse @%s fielder.\n\n%s", annotation.simpleName, stackTrace)
+        error(element, "Unable to parse @%s fielder.\n\n%s.", annotation.simpleName, stackTrace)
     }
 
     private fun error(element: Element, message: String, vararg args: Any) {
-        printMessage(Diagnostic.Kind.ERROR, element, message, args)
+        printMessage(Diagnostic.Kind.ERROR, element, message, *args)
     }
 
     private fun note(element: Element?, message: String, vararg args: Any) {
-        printMessage(Diagnostic.Kind.NOTE, element, message, args)
+        printMessage(Diagnostic.Kind.NOTE, element, message, *args)
     }
 
     private fun printMessage(kind: Diagnostic.Kind, element: Element?, message: String, vararg args: Any) {
         var formattedMsg = message;
         if (args.isNotEmpty()) {
-            formattedMsg = String.format(message, *args)
+            formattedMsg = message.format(*args)
         }
         processingEnv.messager.printMessage(kind, formattedMsg, element)
     }

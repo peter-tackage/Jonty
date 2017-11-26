@@ -2,7 +2,7 @@ group 'com.petertackage.jonty'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '1.1.51'
+    ext.kotlin_version = '1.1.60'
 
     repositories {
         mavenCentral()
@@ -21,9 +21,10 @@ repositories {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
-    compile 'com.github.peter-tackage.jonty:jonty-annotations:0.3'
-    kapt 'com.github.peter-tackage.jonty:jonty-processor:0.3'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    compileOnly 'com.github.peter-tackage.jonty:jonty:0.5'
+    kapt 'com.github.peter-tackage.jonty:jonty-processor:0.5'
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
@@ -35,11 +36,4 @@ idea {
         sourceDirs += files('build/generated/source/kapt/main', 'build/generated/source/kaptKotlin/main')
         generatedSourceDirs += files('build/generated/source/kapt/main', 'build/generated/source/kaptKotlin/main')
     }
-}
-
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
 }
