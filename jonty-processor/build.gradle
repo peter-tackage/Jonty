@@ -2,12 +2,10 @@ apply plugin: 'java-library'
 apply plugin: 'kotlin'
 
 dependencies {
-    implementation project(":jonty-annotations")
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    api 'com.squareup:kotlinpoet:0.6.0'
 
-    // AutoService doesn't work with Kotlin classes
-    // compileOnly 'com.google.auto.service:auto-service:1.0-rc3'
+    implementation project(":jonty-annotations")
+    api 'com.squareup:kotlinpoet:0.6.0'
 
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
