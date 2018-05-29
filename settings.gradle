@@ -2,4 +2,5 @@ rootProject.name = 'jonty-parent'
 include 'jonty-annotations'
 include 'jonty-processor'
 include 'jonty'
-//include 'example-local'
+// Uncomment to test locally.
+// include 'example-local'

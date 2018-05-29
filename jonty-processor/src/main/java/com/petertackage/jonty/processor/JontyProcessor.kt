@@ -39,7 +39,6 @@ import javax.lang.model.type.TypeMirror
 import javax.lang.model.util.Elements
 import javax.tools.Diagnostic
 
-//@AutoService(Processor::class)
 @SupportedOptions(JontyProcessor.KAPT_KOTLIN_GENERATED_OPTION_NAME)
 class JontyProcessor : AbstractProcessor() {
 
@@ -49,6 +48,7 @@ class JontyProcessor : AbstractProcessor() {
     companion object {
         const val KAPT_KOTLIN_GENERATED_OPTION_NAME = "kapt.kotlin.generated"
         private val OPTION_DEBUGGABLE = "jonty.debuggable"
+        private val DEBUG = false
     }
 
     @Synchronized override fun init(env: ProcessingEnvironment) {
@@ -60,7 +60,7 @@ class JontyProcessor : AbstractProcessor() {
     override fun process(annotations: Set<TypeElement>,
                          roundEnv: RoundEnvironment): Boolean {
 
-        note(null, "Starting annotation processing round.")
+        debug(null, "Starting annotation processing round.")
         val fielderMap = findAndParseFields(roundEnv)
 
         for ((typeElement, fielder) in fielderMap) {
@@ -69,7 +69,7 @@ class JontyProcessor : AbstractProcessor() {
 
             try {
                 val kaptKotlinGeneratedOutDir = processingEnv.options[KAPT_KOTLIN_GENERATED_OPTION_NAME]
-                note(null, "kaptKotlin output directory: %s.", KAPT_KOTLIN_GENERATED_OPTION_NAME)
+                debug(null, "kaptKotlin output directory: %s.", KAPT_KOTLIN_GENERATED_OPTION_NAME)
                 kotlinFile.writeTo(Paths.get(kaptKotlinGeneratedOutDir))
             } catch (e: IOException) {
                 error(typeElement, "Unable to write fielder for type %s: %s.", typeElement, e)
@@ -95,7 +95,7 @@ class JontyProcessor : AbstractProcessor() {
 
         // Process each @Fieldable class element.
         for (element in env.getElementsAnnotatedWith(Fieldable::class.java)) {
-            note(element, "Processing annotated element: %s.", element)
+            debug(element, "Processing annotated element: %s.", element)
             try {
                 parseFieldableClass(element, builderMap)
             } catch (e: Exception) {
@@ -126,14 +126,14 @@ class JontyProcessor : AbstractProcessor() {
         while (typeElement != null) {
             for (enclosedElement in typeElement.enclosedElements) {
 
-                note(enclosedElement,
+                debug(enclosedElement,
                         "Element enclosed element: %s, modifiers: %s, type: %s.",
                         enclosedElement.simpleName, enclosedElement.modifiers, enclosedElement.asType())
 
                 // Only interested in non-static fields; properties
                 if (enclosedElement.kind == ElementKind.FIELD && !enclosedElement.modifiers.contains(Modifier.STATIC)) {
                     val fieldName = enclosedElement.simpleName.toString()
-                    note(enclosedElement, "!! Adding field !!: %s.", fieldName)
+                    debug(enclosedElement, "!! Adding field !!: %s.", fieldName)
                     fielderBuilder.addName(fieldName)
                 }
             }
@@ -144,13 +144,13 @@ class JontyProcessor : AbstractProcessor() {
     }
 
     private fun findParentType(typeElement: TypeElement): TypeElement? {
-        note(typeElement, "Attempting to find superclass for %s.", typeElement)
+        debug(typeElement, "Attempting to find superclass for %s.", typeElement)
         val type: TypeMirror = typeElement.superclass
         if (type.kind == TypeKind.NONE) {
-            note(typeElement, "No superclass for: %s.", type)
+            debug(typeElement, "No superclass for: %s.", type)
             return null
         }
-        note(typeElement, "Found superclass: %s.", type)
+        debug(typeElement, "Found superclass: %s.", type)
         return (type as DeclaredType).asElement() as TypeElement
     }
 
@@ -172,6 +172,11 @@ class JontyProcessor : AbstractProcessor() {
         printMessage(Diagnostic.Kind.NOTE, element, message, *args)
     }
 
+    private fun debug(element: Element?, message: String, vararg args: Any) {
+        if (DEBUG) printMessage(Diagnostic.Kind.OTHER, element, message, *args)
+    }
+
+
     private fun printMessage(kind: Diagnostic.Kind, element: Element?, message: String, vararg args: Any) {
         var formattedMsg = message;
         if (args.isNotEmpty()) {
@@ -187,4 +192,3 @@ class JontyProcessor : AbstractProcessor() {
     }
 
 }
-
