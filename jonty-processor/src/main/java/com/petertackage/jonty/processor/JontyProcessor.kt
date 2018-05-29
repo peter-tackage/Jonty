@@ -176,7 +176,6 @@ class JontyProcessor : AbstractProcessor() {
         if (DEBUG) printMessage(Diagnostic.Kind.OTHER, element, message, *args)
     }
 
-
     private fun printMessage(kind: Diagnostic.Kind, element: Element?, message: String, vararg args: Any) {
         var formattedMsg = message;
         if (args.isNotEmpty()) {
