@@ -37,7 +37,7 @@ val fields = User_JontyFielder.fields
 or
 
 ```java
-Iterable<String> fields = Sound_JontyFielder.INSTANCE.getFields()
+Iterable<String> fields = User_JontyFielder.INSTANCE.getFields()
 ```
 
 ## Usage
