@@ -79,7 +79,7 @@ Because of the *fielding* (terrible pun, I know) done [here](https://www.youtube
 
 ## Development
 
-To locally est changes to Jonty, use the `example-local` module, which imports the module directly,
+To locally test changes to Jonty, use the `example-local` module, which imports the module directly,
 rather than going through Jitpack.
 
 To do this, uncomment this line in `settings.gradle` -
