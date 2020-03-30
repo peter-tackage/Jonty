@@ -17,6 +17,8 @@
 package com.petertackage.jonty.processor.internal
 
 import com.squareup.kotlinpoet.*
+import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.jvm.jvmField
 import java.util.*
 
 internal class Fielder private constructor(private val fielderClassName: ClassName,
@@ -25,9 +27,9 @@ internal class Fielder private constructor(private val fielderClassName: ClassNa
     private val names: Set<String> = Collections.unmodifiableSet(names)
 
     fun brew(): FileSpec {
-        return FileSpec.builder(fielderClassName.packageName(), fielderClassName.simpleName())
+        return FileSpec.builder(fielderClassName.packageName, fielderClassName.simpleName)
                 .addComment("Generated code by Jonty. Do not modify!")
-                .addType(defineObject(fielderClassName.simpleName()))
+                .addType(defineObject(fielderClassName.simpleName))
                 .build()
     }
 
@@ -38,8 +40,8 @@ internal class Fielder private constructor(private val fielderClassName: ClassNa
     }
 
     private fun defineFields(): PropertySpec {
-        return PropertySpec.builder("fields",
-                ParameterizedTypeName.get(Iterable::class.asClassName(), kotlin.String::class.asTypeName()))
+        return PropertySpec.builder("FIELDS", Iterable::class.parameterizedBy(String::class))
+                .jvmField()
                 .initializer("setOf(%L)", toArgs(names))
                 .build()
     }

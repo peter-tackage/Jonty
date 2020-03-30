@@ -30,14 +30,14 @@ object User_JontyFielder {
 Which can be accessed via:
 
 ```kotlin
-val fields = User_JontyFielder.fields
+val fields = User_JontyFielder.FIELDS
 
 ```
 
 or
 
 ```java
-Iterable<String> fields = User_JontyFielder.INSTANCE.getFields()
+Iterable<String> fields = User_JontyFielder.FIELDS
 ```
 
 ## Usage
@@ -77,7 +77,16 @@ See [freesound-android](https://github.com/futurice/freesound-android) for a ful
 
 Because of the *fielding* (terrible pun, I know) done [here](https://www.youtube.com/watch?v=e4Um90BzDjM).
 
+## Development
 
+To locally est changes to Jonty, use the `example-local` module, which imports the module directly,
+rather than going through Jitpack.
+
+To do this, uncomment this line in `settings.gradle` -
+```groovy
+// Uncomment to test locally.
+//include 'example-local'
+``` 
 ## Acknowledgements
 
 Brought to you by the power of the [Chilicorn](http://spiceprogram.org/chilicorn-history/) and the [Futurice Open Source Program](http://spiceprogram.org/).

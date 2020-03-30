@@ -4,5 +4,5 @@ import com.petertackage.jonty.Fieldable
 
 @Fieldable
 class AClassAsAFile {
-    val afield : String = "dd"
+    val afield: String = "dd"
 }

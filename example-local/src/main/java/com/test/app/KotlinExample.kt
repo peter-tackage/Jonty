@@ -9,8 +9,8 @@ class KotlinClass {
     private var tub: String = "ddfsdsfdsd"
     private val abc: String = "AVX"
 
-    fun getThings() : Iterable<String> {
-        return KotlinClass_JontyFielder.fields
+    fun getThings(): Iterable<String> {
+        return KotlinClass_JontyFielder.FIELDS
     }
 
     @Fieldable

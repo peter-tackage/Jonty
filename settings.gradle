@@ -3,4 +3,4 @@ include 'jonty-annotations'
 include 'jonty-processor'
 include 'jonty'
 // Uncomment to test locally.
-// include 'example-local'
+//include 'example-local'
