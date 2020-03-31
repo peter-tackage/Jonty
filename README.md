@@ -23,7 +23,8 @@ Jonty will generate an object in a Kotlin file in the `User` class' package:
  
 ```kotlin
 object User_JontyFielder {
-  val fields: Iterable<String> = setOf("profiles", "username", "password", "lastLogin")
+  @JvmField
+  val FIELDS: Iterable<String> = setOf("profiles", "username", "password", "lastLogin")
 }
 ``` 
  
